@@ -21,6 +21,7 @@ const MAX_WARPS = 10, WARP_TIME = 3600*6, WARP_LENGTH = 1800
 const MAIN = {
     grassGain() {
         let x = Decimal.mul(5,upgEffect('grass',0)).mul(tmp.tier.mult).mul(tmp.compact)
+        x = x.pow(2)
 
         x = x.mul(upgEffect('perk',0))
         x = x.mul(upgEffect('pp',0))
@@ -140,6 +141,7 @@ const MAIN = {
         x = x.mul(upgEffect('pp',1))
         x = x.mul(upgEffect('crystal',1))
         x = x.mul(upgEffect('plat',1))
+        x = x.pow(2)
 
         x = x.mul(chalEff(0))
 
@@ -194,6 +196,7 @@ const MAIN = {
         if (inChal(2) || inChal(7)) return E(0)
 
         let x = upgEffect('pp',2).mul(tmp.compact)
+        x = x.pow(2)
 
         x = x.mul(upgEffect('crystal',2))
         x = x.mul(upgEffect('perk',6))
@@ -240,8 +243,8 @@ const MAIN = {
 
         return x
     },
-    rangeCut: ()=>50+upgEffect('grass',4,0)+upgEffect('perk',4,0)+upgEffect('planetarium',3,0),
-    autoCut: ()=>hasStarTree('reserv',2)?0.01:5-(player.planetoid.active?0:upgEffect('auto',0,0)+upgEffect('plat',0,0)+starTreeEff('progress',3,0)),
+    rangeCut: () => (50 + upgEffect('grass', 4, 0) + upgEffect('perk', 4, 0) + upgEffect('planetarium', 3, 0)) * 2,
+    autoCut: () => hasStarTree('reserv', 2) ? 0.01 : (5 - (player.planetoid.active ? 0 : upgEffect('auto', 0, 0) + upgEffect('plat', 0, 0) + starTreeEff('progress', 3, 0))) * 0.5,
     level: {
         req(i) {
             i = i.scale(tmp.level.scale3,3,3)
@@ -269,7 +272,7 @@ const MAIN = {
             return i.gt(0) ? this.req(i.sub(1)) : E(0) 
         },
         perk() {
-            let x = player.level
+            let x = player.level*2
 
             return x
         },
@@ -318,6 +321,8 @@ const MAIN = {
             i = i.scale(65,ap.div(5).add(2),0)
 
             let x = Decimal.pow(ap.div(5).add(3),i).mul(b)
+            
+            let x = x.pow(2)
 
             return x.ceil()
         },
@@ -346,6 +351,7 @@ const MAIN = {
         x = x.mul(starTreeEff('progress',2)*starTreeEff('progress',5)*starTreeEff('progress',8)*starTreeEff('progress',10))
 
         x = x.mul(upgEffect('sfrgt',1)).mul(upgEffect('sfrgt',6))
+        x = x.pow(2)
 
         if (player.lowGH <= 4) x = x.mul(10)
         if (player.lowGH <= -8) x = x.mul(getAGHEffect(9,1))
@@ -363,6 +369,7 @@ const MAIN = {
         
         if (player.lowGH <= -16) x = x.pow(1.25)
         if (player.grassjump >= 1) x = x.pow(1.25)
+        x = x.pow(2)
 
         x = x.pow(starTreeEff('ring',31)).pow(tmp.darkChargeEffs.sp||1)
         
@@ -549,7 +556,7 @@ tmp_update.push(()=>{
     }
     else {
         tmp.moonstoneGain = E(1)
-        tmp.moonstoneChance = 0.005
+        tmp.moonstoneChance = 0.1
         
         if (tmp.minStats.gs >= 8) tmp.moonstoneGain = tmp.moonstoneGain.add(getGSEffect(2,0))
         if (tmp.minStats.gs >= 21) {
@@ -561,7 +568,7 @@ tmp_update.push(()=>{
         tmp.moonstoneGain = tmp.moonstoneGain.mul(tmp.compact).ceil()
     }
 
-    tmp.platChance = 0.005
+    tmp.platChance = 0.1
     if (tmp.minStats.gh >= 6 || player.lowGH <= 4) tmp.platChance *= 2
 })
 
